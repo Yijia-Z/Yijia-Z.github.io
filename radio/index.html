@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>馬睪敌台</title>
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M20,70 C25,65 30,60 35,60 C45,60 50,65 55,70 L60,75 C65,78 70,80 75,80 L80,80 C82,80 85,75 85,70 L85,60 C85,55 80,50 75,50 L70,50 C65,50 60,55 58,60 L55,65 C50,70 45,72 40,72 C35,72 30,70 25,65 L20,60' stroke='black' fill='none' stroke-width='3'/><path d='M75,50 L78,40 C80,35 85,32 90,35' stroke='black' fill='none' stroke-width='3'/><circle cx='85' cy='45' r='3'/><path d='M40,60 C35,40 45,30 60,35 Q65,37 68,42' stroke='black' fill='none' stroke-width='3'/><path d='M30,75 Q35,65 45,70 T60,75' stroke='black' fill='none' stroke-width='2'/><path d='M50,40 L55,30 M53,35 L58,25' stroke='black' fill='none' stroke-width='2'/></svg>">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            background-color: black;
+            background-size: auto 50%;
+            background-position: center top;
+            background-repeat: repeat;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1;
+        }
+
+        #current,
+        #history-container,
+        #audio-controls {
+            position: relative;
+            z-index: 2;
+            color: white;
+            width: 100%;
+            text-align: center;
+        }
+
+        #history-container {
+            backdrop-filter: blur(3px);
+            max-height: 50vh;
+            overflow-y: auto;
+            scrollbar-width: none;
+            position: relative;
+            background: linear-gradient(#00000000, #00000088, #00000088);
+        }
+
+        #history-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scroll-button {
+            position: absolute;
+            right: 20px;
+            transform: none;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            z-index: 3;
+            display: none;
+            /* Hide by default */
+        }
+
+        .scroll-button svg {
+            width: 20px;
+            height: 20px;
+            fill: white;
+        }
+
+        #scroll-top {
+            bottom: 60px;
+        }
+
+        #scroll-bottom {
+            bottom: 20px;
+        }
+
+        .scroll-button:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.1);
+            transition: all 0.2s ease;
+        }
+
+        #current {
+            font-size: 1.5em;
+            margin-bottom: 3vh;
+            background: linear-gradient(to bottom, transparent 0%, #00000044 15%, #00000088 50%, #00000044 85%, transparent 100%);
+            padding: 64px 0;
+            line-height: 1.5;
+        }
+
+        #current #title {
+            font-size: 1.5em;
+            opacity: 0.8;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        #current #artist {
+            opacity: 0.5;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        #history {
+            list-style: none;
+            padding: 0;
+            width: 80%;
+            margin: 0 auto;
+        }
+
+        #history li {
+            margin: 5px 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            text-align: left;
+        }
+
+        .artist-cell {
+            text-align: right;
+            opacity: 0.5;
+        }
+
+        .title-cell {
+            text-align: left;
+            opacity: 0.8;
+        }
+
+        #audio-controls {
+            margin-top: 10px;
+        }
+
+        #play-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+        }
+
+        #play-button svg {
+            width: 100%;
+            height: 100%;
+            fill: #ffffffcc;
+        }
+
+        #clear-history-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            width: 20px;
+            height: 20px;
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+
+        #clear-history-button svg {
+            width: 100%;
+            height: 100%;
+            fill: white;
+            opacity: 0.6;
+        }
+
+        #clear-history-button:hover svg {
+            opacity: 1;
+        }
+
+        #footer {
+            font-size: 0.8em;
+            opacity: 0.5;
+            text-align: right;
+            margin-top: 20px;
+            margin-right: 64px;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+
+        #footer a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        #footer a:hover {
+            text-decoration: underline;
+        }
+
+        #favicon-container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            text-align: center;
+            margin-top: 2vh;
+        }
+    </style>
+</head>
+
+<body>
+    <svg id="favicon-container" width="50px" height="50px" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="rgba(255,255,255,0.2)" />
+        <path
+            d='M15,65 C20,60 25,55 30,55 C40,55 45,60 50,65 L55,70 C60,73 65,75 70,75 L75,75 C77,75 80,70 80,65 L80,55 C80,50 75,45 70,45 L65,45 C60,45 55,50 53,55 L50,60 C45,65 40,67 35,67 C30,67 25,65 20,60 L15,55'
+            stroke='black' fill='none' stroke-width='3' />
+        <path d='M70,45 L73,35 C75,30 80,27 85,30' stroke='black' fill='none' stroke-width='3' />
+        <circle cx='80' cy='40' r='3' />
+        <path d='M35,55 C30,35 40,25 55,30 Q60,32 63,37' stroke='black' fill='none' stroke-width='3' />
+        <path d='M25,70 Q30,60 40,65 T55,70' stroke='black' fill='none' stroke-width='2' />
+        <path d='M45,35 L50,25 M48,30 L53,20' stroke='black' fill='none' stroke-width='2' />
+    </svg>
+    <div id="current">
+        <div id="title">🎵</div>
+        <div id="artist">👤</div>
+        <div id="audio-controls">
+            <button id="play-button">
+                <svg viewBox="0 0 24 24" class="play-icon">
+                    <path d="M8 5v14l11-7z" />
+                </svg>
+                <svg viewBox="0 0 24 24" class="pause-icon" style="display: none;">
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                </svg>
+            </button>
+            <audio id="audio-player" controls style="display: none;"></audio>
+        </div>
+    </div>
+    <button id="scroll-top" class="scroll-button">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
+        </svg>
+    </button>
+    <button id="scroll-bottom" class="scroll-button">
+        <svg viewBox="0 0 24 24">
+            <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
+        </svg>
+    </button>
+    <div id="history-container">
+        <h3>Track History
+            <button id="clear-history-button">
+                <svg viewBox="0 0 24 24">
+                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                </svg>
+            </button>
+        </h3>
+        <ul id="history"></ul>
+        <footer id="footer">
+            Clone of <a href="https://thenightlyradio.com/about-2/">The Nightly Radio</a> by 馬睪
+        </footer>
+    </div>
+
+    <script>
+        const eventSource = new EventSource("https://radio.thenightlyradio.com/meta/");
+
+        eventSource.onmessage = function (event) {
+            const data = JSON.parse(event.data);
+            const artist = data.artist;
+            const title = data.title;
+            const cover = data.cover;
+
+            document.getElementById("artist").textContent = `${artist}`;
+            document.getElementById("title").textContent = `${title}`;
+
+            document.body.style.backgroundImage = `url('${cover}')`;
+            document.body.style.backgroundSize = "auto 50%";
+            document.body.style.backgroundRepeat = "repeat";
+
+            const trackKey = `${artist} - ${title}`;
+            const timestamp = Date.now();
+
+            localStorage.setItem(trackKey, timestamp);
+            updateHistory();
+        };
+
+        function updateHistory() {
+            const historyList = document.getElementById("history");
+            historyList.innerHTML = ""; // Clear the existing list
+
+            const tracks = Object.entries(localStorage)
+                .sort(([, timestampA], [, timestampB]) => timestampB - timestampA); // Sort by timestamp
+
+            tracks.forEach(([track, timestamp]) => {
+                const [artist, title] = track.split(" - ");
+                const li = document.createElement("li");
+                const artistCell = document.createElement("span");
+                const titleCell = document.createElement("span");
+
+                artistCell.textContent = artist;
+                titleCell.textContent = title;
+
+                artistCell.className = "artist-cell";
+                titleCell.className = "title-cell";
+
+                li.appendChild(artistCell);
+                li.appendChild(titleCell);
+                historyList.appendChild(li);
+            });
+
+            // Check if content is overflowing after updating
+            checkOverflow();
+        }
+
+        // Add this new function to check overflow
+        const scrollTopBtn = document.getElementById('scroll-top');
+        const scrollBottomBtn = document.getElementById('scroll-bottom');
+        const historyContainer = document.getElementById('history-container');
+
+        function checkOverflow() {
+            const isOverflowing = historyContainer.scrollHeight > historyContainer.clientHeight;
+            scrollTopBtn.style.display = isOverflowing ? 'block' : 'none';
+            scrollBottomBtn.style.display = isOverflowing ? 'block' : 'none';
+        }
+
+        // Update the scroll event listener
+        historyContainer.addEventListener('scroll', () => {
+            const isAtTop = historyContainer.scrollTop === 0;
+            const isAtBottom = historyContainer.scrollHeight - historyContainer.scrollTop === historyContainer.clientHeight;
+
+            if (historyContainer.scrollHeight > historyContainer.clientHeight) {
+                scrollTopBtn.style.opacity = isAtTop ? '0.5' : '1';
+                scrollBottomBtn.style.opacity = isAtBottom ? '0.5' : '1';
+            }
+        });
+
+        // Add resize listener to check overflow on window resize
+        window.addEventListener('resize', checkOverflow);
+
+        // Load history from localStorage on window load
+        window.onload = function () {
+            updateHistory();
+        };
+
+        // Audio player functionality
+        const audio = document.getElementById("audio-player");
+        const playButton = document.getElementById("play-button");
+        const playIcon = playButton.querySelector('.play-icon');
+        const pauseIcon = playButton.querySelector('.pause-icon');
+
+        const streamUrl = "https://radio.thenightlyradio.com/hls/aac_hifi.m3u8";
+
+        function playRadio() {
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(streamUrl);
+                hls.attachMedia(audio);
+                hls.on(Hls.Events.MANIFEST_PARSED, function () {
+                    audio.play();
+                });
+            } else if (audio.canPlayType("application/vnd.apple.mpegurl")) {
+                audio.src = streamUrl;
+                audio.play();
+            }
+        }
+
+        playButton.addEventListener("click", function () {
+            if (audio.paused) {
+                playRadio();
+                playIcon.style.display = 'none';
+                pauseIcon.style.display = 'block';
+            } else {
+                audio.pause();
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+            }
+        });
+
+
+        scrollTopBtn.addEventListener('click', () => {
+            historyContainer.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        scrollBottomBtn.addEventListener('click', () => {
+            historyContainer.scrollTo({
+                top: historyContainer.scrollHeight,
+                behavior: 'smooth'
+            });
+        });
+
+        // Show/hide scroll buttons based on scroll position
+        historyContainer.addEventListener('scroll', () => {
+            const isAtTop = historyContainer.scrollTop === 0;
+            const isAtBottom = historyContainer.scrollHeight - historyContainer.scrollTop - 10 <= historyContainer.clientHeight;
+
+            scrollTopBtn.style.opacity = isAtTop ? '0.5' : '1';
+            scrollBottomBtn.style.opacity = isAtBottom ? '0.5' : '1';
+        });
+
+        const clearHistoryButton = document.getElementById("clear-history-button");
+
+        clearHistoryButton.addEventListener("click", function () {
+            localStorage.clear();
+            updateHistory();
+        });
+    </script>
+</body>
+
+</html>
