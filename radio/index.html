@@ -2,7 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="x-content-type-options" content="nosniff">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>馬睪敌台</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M20,70 C25,65 30,60 35,60 C45,60 50,65 55,70 L60,75 C65,78 70,80 75,80 L80,80 C82,80 85,75 85,70 L85,60 C85,55 80,50 75,50 L70,50 C65,50 60,55 58,60 L55,65 C50,70 45,72 40,72 C35,72 30,70 25,65 L20,60' stroke='black' fill='none' stroke-width='3'/><path d='M75,50 L78,40 C80,35 85,32 90,35' stroke='black' fill='none' stroke-width='3'/><circle cx='85' cy='45' r='3'/><path d='M40,60 C35,40 45,30 60,35 Q65,37 68,42' stroke='black' fill='none' stroke-width='3'/><path d='M30,75 Q35,65 45,70 T60,75' stroke='black' fill='none' stroke-width='2'/><path d='M50,40 L55,30 M53,35 L58,25' stroke='black' fill='none' stroke-width='2'/></svg>">
@@ -46,6 +47,7 @@
         }
         
         #history-container {
+            -webkit-backdrop-filter: blur(3px);
             backdrop-filter: blur(3px);
             max-height: 50vh;
             overflow-y: auto;
@@ -73,7 +75,6 @@
             cursor: pointer;
             z-index: 3;
             display: none;
-            /* Hide by default */
         }
         
         .scroll-button svg {
@@ -189,6 +190,7 @@
             margin-top: 20px;
             margin-right: 64px;
             margin-bottom: 20px;
+            -webkit-user-select: none;
             user-select: none;
         }
         
@@ -211,52 +213,45 @@
     </style>
 </head>
 
-<body>
-    <svg id="favicon-container" width="50px" height="50px" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r="45" fill="rgba(255,255,255,0.2)" />
-        <path
-            d='M15,65 C20,60 25,55 30,55 C40,55 45,60 50,65 L55,70 C60,73 65,75 70,75 L75,75 C77,75 80,70 80,65 L80,55 C80,50 75,45 70,45 L65,45 C60,45 55,50 53,55 L50,60 C45,65 40,67 35,67 C30,67 25,65 20,60 L15,55'
-            stroke='black' fill='none' stroke-width='3' />
-        <path d='M70,45 L73,35 C75,30 80,27 85,30' stroke='black' fill='none' stroke-width='3' />
-        <circle cx='80' cy='40' r='3' />
-        <path d='M35,55 C30,35 40,25 55,30 Q60,32 63,37' stroke='black' fill='none' stroke-width='3' />
-        <path d='M25,70 Q30,60 40,65 T55,70' stroke='black' fill='none' stroke-width='2' />
-        <path d='M45,35 L50,25 M48,30 L53,20' stroke='black' fill='none' stroke-width='2' />
-    </svg>
+<body aria-live="polite">
+    <div id="favicon-container">
+        <img src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M20,70 C25,65 30,60 35,60 C45,60 50,65 55,70 L60,75 C65,78 70,80 75,80 L80,80 C82,80 85,75 85,70 L85,60 C85,55 80,50 75,50 L70,50 C65,50 60,55 58,60 L55,65 C50,70 45,72 40,72 C35,72 30,70 25,65 L20,60' stroke='black' fill='none' stroke-width='3'/><path d='M75,50 L78,40 C80,35 85,32 90,35' stroke='black' fill='none' stroke-width='3'/><circle cx='85' cy='45' r='3'/><path d='M40,60 C35,40 45,30 60,35 Q65,37 68,42' stroke='black' fill='none' stroke-width='3'/><path d='M30,75 Q35,65 45,70 T60,75' stroke='black' fill='none' stroke-width='2'/><path d='M50,40 L55,30 M53,35 L58,25' stroke='black' fill='none' stroke-width='2'/></svg>"
+            alt="Radio Station Favicon" width="50px" height="50px">
+    </div>
     <div id="current">
-        <div id="title">🎵</div>
-        <div id="artist">👤</div>
+        <div id="title"><span aria-label="Current Track Title">🎵</span></div>
+        <div id="artist"><span aria-label="Current Artist">👤</span></div>
         <div id="audio-controls">
-            <button id="play-button">
-                <svg viewBox="0 0 24 24" class="play-icon">
+            <button id="play-button" type="button" aria-label="Play/Pause">
+                <svg viewBox="0 0 24 24" class="play-icon" aria-hidden="true">
                     <path d="M8 5v14l11-7z" />
                 </svg>
-                <svg viewBox="0 0 24 24" class="pause-icon" style="display: none;">
+                <svg viewBox="0 0 24 24" class="pause-icon" style="display: none;" aria-hidden="true">
                     <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                 </svg>
             </button>
             <audio id="audio-player" controls style="display: none;"></audio>
         </div>
     </div>
-    <button id="scroll-top" class="scroll-button">
-        <svg viewBox="0 0 24 24">
+    <button id="scroll-top" type="button" class="scroll-button" aria-label="Scroll to Top" style="display:none">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z" />
         </svg>
     </button>
-    <button id="scroll-bottom" class="scroll-button">
-        <svg viewBox="0 0 24 24">
+    <button id="scroll-bottom" type="button" class="scroll-button" aria-label="Scroll to Bottom" style="display:none">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
         </svg>
     </button>
     <div id="history-container">
         <h3>Track History
-            <button id="clear-history-button">
-                <svg viewBox="0 0 24 24">
+            <button id="clear-history-button" aria-label="Clear History">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
                 </svg>
             </button>
         </h3>
-        <ul id="history"></ul>
+        <ul id="history" aria-label="Track History"></ul>
         <footer id="footer">
             Clone of <a href="https://thenightlyradio.com/about-2/">The Nightly Radio</a> by 馬睪
         </footer>
@@ -370,13 +365,14 @@
                 playRadio();
                 playIcon.style.display = 'none';
                 pauseIcon.style.display = 'block';
+                playButton.setAttribute("aria-label", "Pause");
             } else {
                 audio.pause();
                 playIcon.style.display = 'block';
                 pauseIcon.style.display = 'none';
+                playButton.setAttribute("aria-label", "Play");
             }
         });
-
 
         scrollTopBtn.addEventListener('click', () => {
             historyContainer.scrollTo({
