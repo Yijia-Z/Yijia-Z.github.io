@@ -9,6 +9,8 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M20,70 C25,65 30,60 35,60 C45,60 50,65 55,70 L60,75 C65,78 70,80 75,80 L80,80 C82,80 85,75 85,70 L85,60 C85,55 80,50 75,50 L70,50 C65,50 60,55 58,60 L55,65 C50,70 45,72 40,72 C35,72 30,70 25,65 L20,60' stroke='black' fill='none' stroke-width='3'/><path d='M75,50 L78,40 C80,35 85,32 90,35' stroke='black' fill='none' stroke-width='3'/><circle cx='85' cy='45' r='3'/><path d='M40,60 C35,40 45,30 60,35 Q65,37 68,42' stroke='black' fill='none' stroke-width='3'/><path d='M30,75 Q35,65 45,70 T60,75' stroke='black' fill='none' stroke-width='2'/><path d='M50,40 L55,30 M53,35 L58,25' stroke='black' fill='none' stroke-width='2'/></svg>">
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
+        /* General Styles */
+        
         body {
             font-family: Arial, Helvetica, sans-serif;
             text-align: center;
@@ -23,6 +25,8 @@
             justify-content: space-between;
             align-items: center;
             position: relative;
+            color: white;
+            /* Default text color */
         }
         
         body::before {
@@ -35,16 +39,77 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 1;
         }
+        /* Element Positioning and Z-Index */
         
         #current,
         #history-container,
-        #audio-controls {
+        #audio-controls,
+        #favicon-container {
             position: relative;
             z-index: 2;
-            color: white;
             width: 100%;
             text-align: center;
         }
+        /* Favicon Styles */
+        
+        #favicon-container {
+            margin-top: 2vh;
+        }
+        
+        #favicon-container img {
+            transition: animation 0.3s ease;
+        }
+        
+        #favicon-container img.spinning {
+            animation: spin 3s linear infinite;
+        }
+        /* Current Track Styles */
+        
+        #current {
+            font-size: 1.5em;
+            padding: 25px 0;
+            max-height: calc(50vh - 50px);
+            background: linear-gradient(to bottom, transparent 0%, #00000044 15%, #00000088 50%, #00000044 85%, transparent 100%);
+            line-height: 1.5;
+            overflow: hidden;
+        }
+        
+        #current #title {
+            font-size: 1.5em;
+            opacity: 0.8;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        #current #artist {
+            opacity: 0.5;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+        }
+        /* Audio Controls Styles */
+        
+        #audio-controls {
+            margin-top: 10px;
+        }
+        
+        #play-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+        }
+        
+        #play-button svg {
+            width: 100%;
+            height: 100%;
+            fill: #ffffffcc;
+            transition: fill 0.2s ease;
+        }
+        
+        #play-button:hover svg {
+            opacity: 0.6;
+        }
+        /* History Container Styles */
         
         #history-container {
             -webkit-backdrop-filter: blur(3px);
@@ -63,57 +128,16 @@
             display: none;
         }
         
-        .scroll-button {
-            position: absolute;
-            right: 20px;
-            transform: none;
-            background: rgba(0, 0, 0, 0.5);
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            z-index: 3;
-            display: none;
-        }
-        
-        .scroll-button svg {
-            width: 20px;
-            height: 20px;
-            fill: white;
-        }
-        
-        #scroll-top {
-            bottom: 60px;
-        }
-        
-        #scroll-bottom {
-            bottom: 20px;
-        }
-        
-        .scroll-button:hover {
-            background: rgba(0, 0, 0, 0.9);
-            transform: scale(1.1);
-            transition: all 0.2s ease;
-        }
-        
-        #current {
-            font-size: 1.5em;
-            padding: 64px 0;
-            background: linear-gradient(to bottom, transparent 0%, #00000044 15%, #00000088 50%, #00000044 85%, transparent 100%);
-            line-height: 1.5;
-        }
-        
-        #current #title {
-            font-size: 1.5em;
+        #history-container h3 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
             opacity: 0.8;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            user-select: none;
         }
-        
-        #current #artist {
-            opacity: 0.5;
-            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
-        }
+        /* History List Styles */
         
         #history {
             list-style: none;
@@ -139,25 +163,7 @@
             text-align: left;
             opacity: 0.8;
         }
-        
-        #audio-controls {
-            margin-top: 10px;
-        }
-        
-        #play-button {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0;
-            width: 40px;
-            height: 40px;
-        }
-        
-        #play-button svg {
-            width: 100%;
-            height: 100%;
-            fill: #ffffffcc;
-        }
+        /* Clear History Button Styles */
         
         #clear-history-button {
             background: none;
@@ -166,21 +172,56 @@
             padding: 0;
             width: 20px;
             height: 20px;
-            position: absolute;
-            top: 5px;
-            right: 5px;
+            position: static;
         }
         
         #clear-history-button svg {
             width: 100%;
             height: 100%;
-            fill: white;
-            opacity: 0.6;
+            fill: #ffffffcc;
+            transition: fill 0.2s ease;
         }
         
         #clear-history-button:hover svg {
+            fill: #ff0000cc;
             opacity: 1;
         }
+        /* Scroll Button Styles */
+        
+        .scroll-button {
+            position: absolute;
+            right: 20px;
+            transform: none;
+            background: none;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            z-index: 3;
+            display: none;
+        }
+        
+        .scroll-button svg {
+            width: 20px;
+            height: 20px;
+            fill: #ffffffcc;
+        }
+        
+        #scroll-top {
+            bottom: 60px;
+        }
+        
+        #scroll-bottom {
+            bottom: 20px;
+        }
+        
+        .scroll-button:hover {
+            background: rgba(0, 0, 0, 0.9);
+            transform: scale(1.1);
+            transition: all 0.2s ease;
+        }
+        /* Footer Styles */
         
         #footer {
             font-size: 0.8em;
@@ -201,13 +242,15 @@
         #footer a:hover {
             text-decoration: underline;
         }
+        /* Keyframes */
         
-        #favicon-container {
-            position: relative;
-            z-index: 2;
-            width: 100%;
-            text-align: center;
-            margin-top: 2vh;
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -244,7 +287,7 @@
     </button>
     <div id="history-container">
         <h3>Track History
-            <button id="clear-history-button" aria-label="Clear History">
+            <button id="clear-history-button" type="button" aria-label="Clear History">
                 <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
                 </svg>
@@ -360,17 +403,30 @@
         }
 
         playButton.addEventListener("click", function() {
+            const favicon = document.querySelector('#favicon-container img');
+
             if (audio.paused) {
                 playRadio();
                 playIcon.style.display = 'none';
                 pauseIcon.style.display = 'block';
                 playButton.setAttribute("aria-label", "Pause");
+                favicon.classList.add('spinning');
             } else {
                 audio.pause();
                 playIcon.style.display = 'block';
                 pauseIcon.style.display = 'none';
                 playButton.setAttribute("aria-label", "Play");
+                favicon.classList.remove('spinning');
             }
+        });
+
+        // Add this to handle when audio stops for other reasons
+        audio.addEventListener('pause', () => {
+            const favicon = document.querySelector('#favicon-container img');
+            favicon.classList.remove('spinning');
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+            playButton.setAttribute("aria-label", "Play");
         });
 
         scrollTopBtn.addEventListener('click', () => {
