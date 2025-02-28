@@ -1,8 +1,3 @@
----
-author: 馬睪
-date: 2023-05
-title: iCloud备忘录
----
 # **尘世帝国的片刻**
 
 <iframe style="border-radius:12px" src="https://open.spotify.com/embed/track/2uvzSvcgmy5tHcaH5AFcQ7" width="50%" height="80" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"> </iframe>
