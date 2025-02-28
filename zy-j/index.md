@@ -32,3 +32,7 @@ title: diaries notes & sketches
 
 - [网络艺术考 | net art notes](/netart)
 - [译策兰 | Celan](/celan)
+- [译哈代 | Hardy](/hardy)
+- [cine'23](/cine23)
+- [muzak'19 ~ ?](/spotify)
+- 

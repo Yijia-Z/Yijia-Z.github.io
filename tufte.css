@@ -393,6 +393,13 @@ label.margin-toggle:not(.sidenote-number) {
     height: 100%;
 }
 
+.spotify {
+    border: none;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 768px;
+}
+
 @media (max-width: 760px) {
     body {
         width: 84%;
