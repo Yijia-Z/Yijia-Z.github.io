@@ -17,6 +17,7 @@ title: diaries notes & sketches
 
 - a non-linear [llm interface design](https://aide.zy-j.com) with tools
 - a [radio](https://zy-j.com/radio/) [^1]
+- bringing back [dalle·2](https://dalle2.zy-j.com)
 - [obscura](https://obscura.zy-j.com/)[^2]
 
 ## spectacles
