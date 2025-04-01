@@ -14,4 +14,8 @@ hypertextual exchanges will be agnostic. if one has infinite mental/computing ca
 
 although everything is interconnected, we always find flocculent structures in non-homogeneous mixtures. networks and graphs are a common way to approximate such manifold. simply put, graph based dialogs will be a more efficient way for brain-llm interaction, even in an asi scenario.
 
+## directed acyclic graph
+
+directed acyclic graph may be an optimal abstraction of human dialog in written forms. as time does not revert and past textual references cannot be unsaid, the flow must not be
+
 [^1]: DeepSeek R Zero
