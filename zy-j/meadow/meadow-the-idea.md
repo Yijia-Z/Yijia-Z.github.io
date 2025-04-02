@@ -16,6 +16,8 @@ although everything is interconnected, we always find flocculent structures in n
 
 ## directed acyclic graph
 
-directed acyclic graph may be an optimal abstraction of human dialog in written forms. as time does not revert and past textual references cannot be unsaid, the flow must not be
+directed acyclic graph may be an optimal abstraction of human dialog in written forms. as time does not revert and past textual references cannot be unsaid, the conversational flow must have directions. this temporal sequence allows repeated access of contexts without forming cycles.
+
+## 
 
 [^1]: DeepSeek R Zero
