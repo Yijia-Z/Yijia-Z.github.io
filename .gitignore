@@ -1,0 +1,13 @@
+# 系统文件
+.DS_Store
+
+# Obsidian配置
+.obsidian/
+
+# Markdown源文件
+*.md
+
+zy-j/
+
+# CodeBuddy
+.codebuddy/
